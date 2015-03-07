@@ -13,6 +13,17 @@ public class Login extends JFrame implements ActionListener{
         this.setTitle("登陆");
         this.setSize(300, 150);
         this.setLocationRelativeTo(null);
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
         JLabel user = new JLabel("用户名");
         JLabel pw = new JLabel("密码");
         JButton b1 = new JButton("登陆");
