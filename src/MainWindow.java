@@ -5,11 +5,16 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.*;
+import java.net.Socket;
 
 /**
  * Created by jhcpokemon on 2015/03/02.
  */
 public class MainWindow extends JFrame implements ActionListener,KeyListener{
+    private Socket s;
+    public void setSocket(Socket value){
+        s = value;
+    }
     JTextArea view = new JTextArea();
     JTextField chat = new JTextField();
     MainWindow(){
@@ -70,6 +75,15 @@ public class MainWindow extends JFrame implements ActionListener,KeyListener{
                 PrintWriter pw = new PrintWriter(fw);
                 pw.println(chat.getText());
                 pw.close();
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            try{
+                OutputStream os = s.getOutputStream();
+                OutputStreamWriter osw = new OutputStreamWriter(os);
+                PrintWriter pw = new PrintWriter(osw);
+                pw.println(chat.getText());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -82,9 +96,17 @@ public class MainWindow extends JFrame implements ActionListener,KeyListener{
             try {
                 File f = new File("./src/log.txt");
                 FileWriter fw = new FileWriter(f, true);
-                PrintWriter pw = new PrintWriter(fw);
+                PrintWriter pw = new PrintWriter(fw , true);
                 pw.println(chat.getText());
-                pw.close();
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            try{
+                OutputStream os = s.getOutputStream();
+                OutputStreamWriter osw = new OutputStreamWriter(os);
+                PrintWriter pw = new PrintWriter(osw , true);
+                pw.println(chat.getText());
             } catch (Exception e) {
                 e.printStackTrace();
             }
