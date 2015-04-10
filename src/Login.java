@@ -10,7 +10,7 @@ import java.net.Socket;
 /**
  * Created by jhcpokemon on 2015/03/02.
  */
-public class Login extends JFrame implements ActionListener {
+public class Login extends JFrame implements ActionListener{
     JTextField input1 = new JTextField();
     JPasswordField input2 = new JPasswordField();
 
@@ -55,6 +55,9 @@ public class Login extends JFrame implements ActionListener {
         this.setLayout(new BorderLayout());
         this.add(inputPanel, BorderLayout.NORTH);
         this.add(buttonPanel, BorderLayout.SOUTH);
+
+        Thread t = new Thread();
+        t.start();
     }
 
     public static void main(String[] args) {
@@ -77,12 +80,12 @@ public class Login extends JFrame implements ActionListener {
                 InputStreamReader isr = new InputStreamReader(is);
                 BufferedReader br = new BufferedReader(isr);
                 String rep = br.readLine();
-                if(rep.equals("OK")) {
+                if (rep.equals("OK")) {
                     this.setVisible(false);
                     MainWindow f = new MainWindow();
                     f.setSocket(s);
                     f.setVisible(true);
-                }else{
+                } else {
                     System.out.println("error");
                 }
             } catch (Exception e) {

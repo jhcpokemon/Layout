@@ -1,22 +1,22 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.io.*;
 import java.net.Socket;
 
 /**
  * Created by jhcpokemon on 2015/03/02.
  */
-public class MainWindow extends JFrame implements ActionListener,KeyListener{
+public class MainWindow extends JFrame implements ActionListener,KeyListener,Runnable,WindowListener{
     private Socket s;
     public void setSocket(Socket value){
         s = value;
+        Thread t = new Thread();
+        t.start();
     }
     JTextArea view = new JTextArea();
     JTextField chat = new JTextField();
+    JComboBox cmbUser = new JComboBox();
     MainWindow(){
         this.setTitle("聊天");
         this.setSize(300,750);
@@ -35,7 +35,6 @@ public class MainWindow extends JFrame implements ActionListener,KeyListener{
         int screenX = Toolkit.getDefaultToolkit().getScreenSize().width;
         int frameX = this.getSize().width;
         this.setLocation(screenX - frameX,0);
-        JComboBox cmbUser = new JComboBox();
         JButton b1 = new JButton("发送");
         chat.addKeyListener(this);
 
@@ -64,7 +63,6 @@ public class MainWindow extends JFrame implements ActionListener,KeyListener{
             br.close();
         }
         catch (Exception e){}
-
     }
     public void actionPerformed(ActionEvent arg0){
         if(arg0.getActionCommand().equals("发送")) {
@@ -115,4 +113,42 @@ public class MainWindow extends JFrame implements ActionListener,KeyListener{
     }
     public void keyReleased(KeyEvent arg0){}
     public void keyTyped(KeyEvent arg0){}
+    @Override
+    public void run() {
+        try {
+            InputStream is = s.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader br = new BufferedReader(isr);
+            while (true){
+                String message = br.readLine();
+                String type = message.split("%")[0];
+                String mess = message.split("%")[1];
+                if(type.equals("add")) {
+                    cmbUser.addItem(mess);
+                }
+                if(type.equals("exit")){
+                    cmbUser.removeItem(mess);
+                }
+                if(type.equals("mess")){
+                    view.append(mess+"\n");
+                }
+            }
+        } catch (Exception e) {
+        }
+    }
+    public void windowClosing(WindowEvent arg0){
+        try {
+            OutputStream os = s.getOutputStream();
+            OutputStreamWriter osw = new OutputStreamWriter(os);
+            PrintWriter pw = new PrintWriter(osw,true);
+            pw.println("{exit}");
+            System.exit(0);
+        }catch (Exception e){}
+    }
+    public void windowDeiconified(WindowEvent arg0){}
+    public void windowOpened(WindowEvent arg0){}
+    public void windowClosed(WindowEvent arg0){}
+    public void windowDeactivated(WindowEvent arg0){}
+    public void windowIconified(WindowEvent arg0){}
+    public void windowActivated(WindowEvent arg0){}
 }
